@@ -11,7 +11,8 @@ trainingLabels, trainingSamples = importTrainingData('..\\dataset1.csv')
 validationLabels, validationSamples = importValidationData('..\\validation1.csv')
 unlabeledSamples = importUnlabeled('..\\days.csv')
 
-options = KNN.KNN_options(65, 2, [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+# Oddly, KNN.NeighbourWeightingStrategy.WEIGHTED_MAJORITY_VOTE seems to degrade performance a bit
+options = KNN.KNNOptions(65, 2, [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], KNN.NeighbourWeightingStrategy.MAJORITY_VOTE)
 predictor = KNN(options, trainingLabels, trainingSamples)
 predictor.determine_best_K(validationLabels, validationSamples)
 labels = predictor.predict(unlabeledSamples)
