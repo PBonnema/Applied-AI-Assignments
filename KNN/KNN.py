@@ -97,13 +97,19 @@ class KNN:
         bestK = 0
         bestPerformance = 0
         for K in range(1, self.__options.max_K + 1):
-            labels = KNN.__predict(validation_samples, K, self.__options.weights, self.__options.P, self.__training_labels, self.__training_samples, self.__neighbour_weighting_func)
+            labels = KNN.__predict(validation_samples, \
+                K, \
+                self.__options.weights, \
+                self.__options.P, \
+                self.__training_labels, \
+                self.__training_samples, \
+                self.__neighbour_weighting_func)
             performance = (labels == validation_labels).sum()
             
             print('K {}. Correct {} out of {} ({}%)'.format( \
                 K, performance, len(validation_samples), (100 * performance / len(validation_samples)))) # Here for for demo purposes
                 
-            if performance > bestPerformance or (performance == bestPerformance and K > bestK):
+            if performance > bestPerformance:
                 bestPerformance, bestK = performance, K
 
         print('Done! Best perf. of {}. K = {}'.format(bestPerformance, bestK)) # Here for for demo purposes
