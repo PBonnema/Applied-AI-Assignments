@@ -1,7 +1,7 @@
 import numpy as np
 
-def importTrainingData(path):
-    dataPoints = np.genfromtxt(
+def import_training_data(path):
+    data_points = np.genfromtxt(
         path,
         delimiter = ';',
         usecols = [1, 2, 3, 4, 5, 6, 7],
@@ -25,10 +25,10 @@ def importTrainingData(path):
         else: # from 01-12 to end of year 
             labels.append('winter')
     
-    return np.array(labels), dataPoints
+    return np.array(labels), data_points
 
-def importValidationData(path):
-    dataPoints = np.genfromtxt(
+def import_validation_data(path):
+    data_points = np.genfromtxt(
         path,
         delimiter = ';',
         usecols = [1, 2, 3, 4, 5, 6, 7],
@@ -52,10 +52,10 @@ def importValidationData(path):
         else: # from 01-12 to end of year 
             labels.append('winter')
 
-    return np.array(labels), dataPoints
+    return np.array(labels), data_points
 
-def importUnlabeled(path):
-    dataPoints = np.genfromtxt(
+def import_unlabeled(path):
+    data_points = np.genfromtxt(
         path,
         delimiter = ';',
         usecols = [1, 2, 3, 4, 5, 6, 7],
@@ -65,4 +65,4 @@ def importUnlabeled(path):
         }
     )
 
-    return dataPoints
+    return data_points

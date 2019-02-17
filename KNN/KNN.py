@@ -1,6 +1,6 @@
+import utility as util
 import numpy as np
 import itertools as it
-from collections import Counter, defaultdict
 from enum import Enum
 
 class KNN:
@@ -30,58 +30,44 @@ class KNN:
             `P` -- The power parameter for the Minkowski distance algorithm.\n
             `weights` -- A NumPy ndarray of numbers with shape `[n]` where `n` equal to the number of elements in a sample.
             These can be used to scale the contribution each dimension of the input samples during the calculation of the distance between samples.\n
-            `neighbour_weighting_strategy` -- A member of `Neighbour_Weighting_Strategy` indicating how neighbours of samples should be weighted during label prediction.
+            `neighbour_weighting_strategy` -- A member of `NeighbourWeightingStrategy` indicating how neighbours of samples should be weighted during label prediction.
             """
-            self.max_K, self.P, self.weights, self.neighbour_weighting_strategy = max_K, P, weights, neighbour_weighting_strategy
-
-    @staticmethod
-    def __minkowski(sample1, sample2, weights, P):
-        return ((np.fabs(sample1 - sample2) * weights) ** P).sum()
-
-    @staticmethod
-    def __majority_vote(neighbour_labels, neighbour_distances):
-        return Counter(neighbour_labels).most_common(1)[0][0]
-    
-    @staticmethod
-    def __weighted_majority_vote(neighbour_labels, neighbour_distances):
-        label_votes = defaultdict(int)
-        for i in range(neighbour_labels.shape[0]):
-            label_votes[neighbour_labels[i]] += 1.0 / neighbour_distances[i]
-
-        return max(label_votes, key = label_votes.get)
+            self.max_K, self.P = max_K, P
+            self.weights, self.neighbour_weighting_strategy = weights, neighbour_weighting_strategy
 
     @staticmethod
     def __predict(samples, K, weights, P, training_labels, training_samples, neighbour_weighting_func):
         labels = []
         for sample in samples:
             # Calculate the Minkowski distances from sample to each training sample and store the results in an array
-            distances = np.empty((training_samples.shape[0],))
-            for distance, trainingSample in zip(np.nditer(distances, op_flags=['writeonly']), training_samples):
-                distance[...] = KNN.__minkowski(sample, trainingSample, weights, P)
+            distances_squared = np.empty(training_samples.shape[0])
+            for distance, training_sample in zip(np.nditer(distances_squared, op_flags=['writeonly']), training_samples):
+                distance[...] = util.minkowski_squared(sample, training_sample, weights, P)
 
             # Calculate the indices of the K nearest neighbours by partitioning our distances array using K-1 as the pivot.
             # Then use the indices to look up the corresponding labels and distances.
-            neighbour_indices = np.argpartition(distances, K-1)[:K]
+            neighbour_indices = np.argpartition(distances_squared, K-1)[:K]
             neighbour_labels = training_labels[neighbour_indices]
-            neighbour_distances = distances[neighbour_indices]
+            neighbour_distances_squared = distances_squared[neighbour_indices]
 
             # Count each label, take the most common label, and append it to the labels array as a result.
-            labels.append(neighbour_weighting_func(neighbour_labels, neighbour_distances))
+            labels.append(neighbour_weighting_func(neighbour_labels, neighbour_distances_squared))
 
-        return labels
+        return np.array(labels)
 
     def __init__(self, options, training_labels, training_samples):
         """
-        `options` -- A KNN_options instance.\n
+        `options` -- A `KNNOptions` instance.\n
         `training_labels` -- A NumPy array of 1 dimension containing the labels for the training samples.\n
         `training_samples` -- A NumPy array with at least 2 dimensions. It contains the training samples.
         """
-        self.__options, self.__training_labels, self.__training_samples, self.__K = options, training_labels, training_samples, None
+        self.__options, self.__training_labels = options, training_labels
+        self.__training_samples, self.__K = training_samples, None
 
         if options.neighbour_weighting_strategy == KNN.NeighbourWeightingStrategy.MAJORITY_VOTE:
-            self.__neighbour_weighting_func = KNN.__majority_vote
+            self.__neighbour_weighting_func = util.majority_vote
         elif options.neighbour_weighting_strategy == KNN.NeighbourWeightingStrategy.WEIGHTED_MAJORITY_VOTE:
-            self.__neighbour_weighting_func = KNN.__weighted_majority_vote
+            self.__neighbour_weighting_func = util.weighted_majority_vote
 
     def determine_best_K(self, validation_labels, validation_samples):
         """Determine the best K to use according to its performance. This can take a long time!
@@ -94,8 +80,8 @@ class KNN:
         Returns the choosen K and its performance (as the number of correctly guessed labels)
         """
 
-        bestK = 0
-        bestPerformance = 0
+        best_K = 0
+        best_performance = 0
         for K in range(1, self.__options.max_K + 1):
             labels = KNN.__predict(validation_samples, \
                 K, \
@@ -109,12 +95,12 @@ class KNN:
             print('K {}. Correct {} out of {} ({}%)'.format( \
                 K, performance, len(validation_samples), (100 * performance / len(validation_samples)))) # Here for for demo purposes
                 
-            if performance > bestPerformance:
-                bestPerformance, bestK = performance, K
+            if performance > best_performance:
+                best_performance, best_K = performance, K
 
-        print('Done! Best perf. of {}. K = {}'.format(bestPerformance, bestK)) # Here for for demo purposes
-        self.__K = bestK
-        return bestK, bestPerformance
+        print('Done! Best perf. of {}. K = {}'.format(best_performance, best_K)) # Here for for demo purposes
+        self.__K = best_K
+        return best_K, best_performance
 
     def predict(self, samples, training_labels = None, training_samples = None):
         """Predicts the labels for the given `samples` and returns it as a 1 dimensional NumPy array.
@@ -128,16 +114,16 @@ class KNN:
         Raises an error if `determine_best_K()` was never called.
         """
         if not self.__K:
-            raise Exception('K was not determined. Call determineBestK() first before calling predict().')
+            raise Exception('K was not determined. Call determine_best_K() first before calling predict().')
        
         if training_labels is None:
             training_labels = self.__training_labels
         if training_samples is None:
             training_samples = self.__training_samples
-        return np.array(KNN.__predict(samples, \
+        return KNN.__predict(samples, \
             self.__K, \
             self.__options.weights, \
             self.__options.P, \
             training_labels, \
             training_samples, \
-            self.__neighbour_weighting_func))
+            self.__neighbour_weighting_func)
