@@ -1,17 +1,12 @@
-from neuron import Neuron
+from biasNeuron import BiasNeuron
 
-class InputNeuron(Neuron):
+class InputNeuron(BiasNeuron):
+    """Represents an input neuron. It exposes only a public `set_output()`."""
     def __init__(self):
-        super().__init__(None, None, None, None)
+        super().__init__()
 
     def __repr__(self):
         return 'input'
 
-    def activate(self):
-        pass
-
-    def update(self, desired_activation):
-        pass
-
     def set_output(self, value):
-        self._output = value
+        self._set_output(value)
