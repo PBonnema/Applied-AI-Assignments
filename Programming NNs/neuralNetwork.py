@@ -119,7 +119,7 @@ class NeuralNetwork:
                 # Run the network with the input to determine its actual output
                 # This call also makes sure that the interal sum values of the neurons are up to date for this particular input sample.
                 actual_output = self.activate(input)
-                error += np.sum((desired_output - actual_output) ** 2)
+                error += ((desired_output - actual_output) ** 2).sum()
 
                 # Now compare the output to the expected response and update the network
                 for neuron, actual, desired in zip(self.__output_layer, actual_output, desired_output):

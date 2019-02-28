@@ -125,7 +125,7 @@ MSE = 0.0
 for input, expected_output in zip(inputs, expected_outputs):
     output = nn.activate(input)
     print('{} -> {}'.format(input, output))
-    MSE += np.sum((expected_output - output) ** 2)
+    MSE += ((expected_output - output) ** 2).sum()
 print('MSE: {}\n'.format(MSE / len(inputs)))
 
 # 4.3 C. XOR and Back-propagation
@@ -172,18 +172,18 @@ MSE = 0.0
 for input, expected_output in zip(inputs, expected_outputs):
     output = nn.activate(input)
     print('{} -> {}'.format(input, output))
-    MSE += np.sum((expected_output - output) ** 2)
+    MSE += ((expected_output - output) ** 2).sum()
 print('MSE: {}\n'.format(MSE / len(inputs)))
 
 # 4.3 D. Iris dataset
 # Neural Network Settings
-validation_percentage = 1/3
+validation_percentage = 0.6
 minimum_certainty = 0.8
-learning_rate = 0.11
+learning_rate = 0.12
 epochs = 500
 weight_lower_bound = -1
 weight_upper_bound = 1
-rng = np.random.RandomState(seed = None)
+rng = np.random.RandomState(seed = 0)
 nn = NeuralNetwork(
     4,
     [
@@ -223,30 +223,29 @@ print('Training...')
 errors = nn.train(training_samples, training_labels, learning_rate, epochs)
 
 print('After training:')
-MSE = 0.0
-correct_count = 0
 
 def threshold_output(output, min, max, minimum_certainty):
     assert minimum_certainty >= 0.5
     assert max > min
-    copy = np.copy(output)
+    copy = output.copy()
     copy[np.nonzero(output >= (max - min) * minimum_certainty + min)] = max
     copy[np.nonzero(output <= max - (max - min) * minimum_certainty)] = min
     return copy
 
 # Show the result per input sample
+MSE = 0.0
+correct_count = 0
 for input, expected_output in zip(val_samples, val_labels):
-    output = np.array(nn.activate(input))
-    correct = np.all(threshold_output(output, 0.0, 1.0, minimum_certainty) == expected_output)
+    output = nn.activate(input)
+    correct = (threshold_output(output, 0.0, 1.0, minimum_certainty) == expected_output).all()
     correct_count += correct
     print('{} -> {} expected: {}. {}'.format(input, output, expected_output, 'Correct' if correct else 'Not correct' ))
 
-    MSE += np.sum((expected_output - output) ** 2)
+    MSE += ((expected_output - output) ** 2).sum()
 
 # Show the aggregate results
-MSE /= val_samples.shape[0]
-print('Mean Squared Error: {:0.5f}\nCorrect: {:0.2f}% ({}/{})'.format( \
-    MSE, \
+print('Mean squared error for validation set: {:0.5f}\nCorrect: {:0.2f}% ({}/{})'.format( \
+    MSE / val_samples.shape[0], \
     100 * correct_count / val_samples.shape[0], \
     correct_count, \
     val_samples.shape[0]))
