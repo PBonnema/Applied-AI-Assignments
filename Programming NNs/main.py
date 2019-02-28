@@ -78,10 +78,10 @@ print()
 # 4.3 B. Delta Rule
 # Neural Network Settings
 learning_rate = 100
-training_cycles = 1000
+epochs = 1000
 weight_lower_bound = -1
 weight_upper_bound = 1
-rng = np.random.RandomState(None)
+rng = np.random.RandomState(seed = None)
 nn = NeuralNetwork(
     3,
     [],
@@ -118,7 +118,7 @@ expected_outputs = np.array([
 # This learning rate is extremely high, yet yields very good results.
 # I think this is due to the fact that the perfect output values are 0 and 1 and the sigmoid function is only 0 or 1 at its extremes
 # and needs an infinite input for that. To do this the network is trying to train infinite weights.
-nn.train(inputs, expected_outputs, learning_rate, training_cycles)
+nn.train(inputs, expected_outputs, learning_rate, epochs)
 
 print('After training:')
 MSE = 0.0
@@ -131,10 +131,10 @@ print('MSE: {}\n'.format(MSE / len(inputs)))
 # 4.3 C. XOR and Back-propagation
 # Neural Network Settings
 learning_rate = 20
-training_cycles = 2000
+epochs = 2000
 weight_lower_bound = -1
 weight_upper_bound = 1
-rng = np.random.RandomState(None)
+rng = np.random.RandomState(seed = None)
 nn = NeuralNetwork(
     2,
     [
@@ -165,7 +165,7 @@ expected_outputs = np.array([
     [0],
 ])
 
-nn.train(inputs, expected_outputs, learning_rate, training_cycles)
+nn.train(inputs, expected_outputs, learning_rate, epochs)
 
 print('After training:')
 MSE = 0.0
@@ -180,10 +180,10 @@ print('MSE: {}\n'.format(MSE / len(inputs)))
 validation_percentage = 1/3
 minimum_certainty = 0.8
 learning_rate = 0.11
-training_cycles = 500
+epochs = 500
 weight_lower_bound = -1
 weight_upper_bound = 1
-rng = np.random.RandomState(None)
+rng = np.random.RandomState(seed = None)
 nn = NeuralNetwork(
     4,
     [
@@ -220,7 +220,7 @@ training_labels, val_labels = label_codes[training_idx,:], label_codes[val_idx,:
 print('Training Iris classifier:\n{}\n'.format(nn))
 nn.randomize(rng, weight_lower_bound, weight_upper_bound)
 print('Training...')
-errors = nn.train(training_samples, training_labels, learning_rate, training_cycles)
+errors = nn.train(training_samples, training_labels, learning_rate, epochs)
 
 print('After training:')
 MSE = 0.0
