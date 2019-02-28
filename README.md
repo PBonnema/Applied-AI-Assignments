@@ -26,15 +26,15 @@ My final topology contains 1 hidden layer with 4 sigmoid neurons and the 4 manda
 These are all the settings:
 
 ```
-validation_percentage = 1/3 # The percentage of the data that will be set aside as a validation set.
+validation_percentage = 0.6 # The percentage of the data that will be set aside as a validation set.
 minimum_certainty = 0.8 # The minimum certainty of outputs before it will be rounded to either 0 or 1. Otherwise, it will be left as is and will thus be incorrect.
-learning_rate = 0.11
+learning_rate = 0.12
 epochs = 500
 weight_lower_bound = -1 # Used during weight randomization.
 weight_upper_bound = 1 # Used during weight randomization.
 ```
 
-Its performance differs between seeds but fluctuates between a mean squared error (MSE) of ~0.8 and ~0.2. The percentage of correctly classified samples fluctuates between 90% and 99% with occasional dips to ~85%.
+Its performance differs between seeds but fluctuates between a mean squared error (MSE) of ~0.8 and ~0.2. The percentage of correctly classified samples fluctuates between 90% and 98% with occasional dips to ~85%.
 
 The learning rate was empirically found by plotting the evolution of the MSE during training. 0.11 is about as high it can be before it starts overshooting minima (clearly visible in the plot).
 
