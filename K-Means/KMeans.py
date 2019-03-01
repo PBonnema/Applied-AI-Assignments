@@ -131,11 +131,11 @@ class KMeans:
                     break
                 KMeans.__reset_empty_clusters(samples, empty_cluster_indices, new_centroids, rng)
                 new_centroid_counts[empty_cluster_indices] = 1
-                new_centroids[...] = np.diag(1.0 / new_centroid_counts) @ new_centroids
-                new_centroid_counts[...], new_centroids[...] = KMeans.__calculate_centroids(samples, new_centroids)
+                new_centroids /= new_centroid_counts.reshape(-1, 1)
+                new_centroid_counts, new_centroids = KMeans.__calculate_centroids(samples, new_centroids)
                 
             # Calculate new centroids by dividing the running totals by the number of samples assigned to each cluster.
-            new_centroids[...] = np.diag(1.0 / new_centroid_counts) @ new_centroids
+            new_centroids /= new_centroid_counts.reshape(-1, 1)
             centroid_movement = KMeans.__calculate_centroid_movement(centroids, new_centroids)
             centroids = new_centroids
 
