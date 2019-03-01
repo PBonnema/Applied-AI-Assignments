@@ -36,7 +36,7 @@ weight_upper_bound = 1 # Used during weight randomization.
 
 Its performance differs between seeds but fluctuates between a mean squared error (MSE) of ~0.8 and ~0.2. The percentage of correctly classified samples fluctuates between 90% and 98% with occasional dips to ~85%.
 
-The learning rate was empirically found by plotting the evolution of the MSE during training. 0.11 is about as high it can be before it starts overshooting minima (clearly visible in the plot).
+The learning rate was empirically found by plotting the evolution of the MSE during training. 0.12 is about as high it can be before it starts overshooting minima (clearly visible in the plot).
 
 Other topologies were also tried. Topologies with more layers had comparable performances so that didn't pay off. A larger number of neurons in the layer also didn't pay off.
 
