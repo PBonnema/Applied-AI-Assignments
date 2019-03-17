@@ -16,21 +16,15 @@ int main()
 {
 	int runs = 200;
 	std::unordered_map<std::string, SelectionStrategy<WingDesignPopMember> *> strategies = {
-		{ "Truncate0.2", new SelectionTruncate<WingDesignPopMember>{ 0.2 } },
-		{ "Truncate0.4", new SelectionTruncate<WingDesignPopMember>{ 0.4 } },
-		{ "Truncate0.6", new SelectionTruncate<WingDesignPopMember>{ 0.6 } },
-		{ "Truncate0.8", new SelectionTruncate<WingDesignPopMember>{ 0.8 } },
-		{ "Roulette", new SelectionRoulette<WingDesignPopMember>{} },
-		{ "SUS", new SelectionSUS<WingDesignPopMember>{} },
-		{ "Tournament2;1.0", new SelectionTournament<WingDesignPopMember>{ 2, { 1.0 } } },
-		{ "Tournament2;0.8", new SelectionTournament<WingDesignPopMember>{ 2, { 0.8 } } },
-		{ "Tournament2;0.6", new SelectionTournament<WingDesignPopMember>{ 2, { 0.6 } } },
-		{ "Tournament3;1.0", new SelectionTournament<WingDesignPopMember>{ 3, { 1.0 } } },
-		{ "Tournament3;0.8", new SelectionTournament<WingDesignPopMember>{ 3, { 0.8 } } },
-		{ "Tournament3;0.6", new SelectionTournament<WingDesignPopMember>{ 3, { 0.6 } } },
-		{ "Tournament4;1.0", new SelectionTournament<WingDesignPopMember>{ 4, { 1.0 } } },
-		{ "Tournament4;0.8", new SelectionTournament<WingDesignPopMember>{ 4, { 0.8 } } },
-		{ "Tournament4;0.6", new SelectionTournament<WingDesignPopMember>{ 4, { 0.6 } } },
+		{ "Truncate0.01", new SelectionTruncate<WingDesignPopMember>{ 0.01 } },
+		{ "Truncate0.01", new SelectionTruncate<WingDesignPopMember>{ 0.02 } },
+		{ "Truncate0.05", new SelectionTruncate<WingDesignPopMember>{ 0.05 } },
+		{ "Tournament10;1.0", new SelectionTournament<WingDesignPopMember>{ 10, { 1.0 } } },
+		{ "Tournament10;0.8", new SelectionTournament<WingDesignPopMember>{ 10, { 0.8 } } },
+		{ "Tournament12;1.0", new SelectionTournament<WingDesignPopMember>{ 12, { 1.0 } } },
+		{ "Tournament12;0.8", new SelectionTournament<WingDesignPopMember>{ 12, { 0.8 } } },
+		{ "Tournament14;1.0", new SelectionTournament<WingDesignPopMember>{ 14, { 1.0 } } },
+		{ "Tournament14;0.8", new SelectionTournament<WingDesignPopMember>{ 14, { 0.8 } } },
 	};
 	
 	for (const auto &[name, selection] : strategies)
@@ -43,7 +37,7 @@ int main()
 		}
 		std::cout << "\n";
 
-		for (int populationSize = 30; populationSize <= 150; populationSize += 20)
+		for (int populationSize = 100; populationSize <= 200; populationSize += 20)
 		{
 			std::cout << "pops: " << std::right << std::setw(3) << populationSize << "  ";
 			for (int eliteSelecteesCount = 1; eliteSelecteesCount <= 10; eliteSelecteesCount++)
