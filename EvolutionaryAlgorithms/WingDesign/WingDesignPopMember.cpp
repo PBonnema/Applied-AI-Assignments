@@ -5,7 +5,7 @@
 double WingDesignPopMember::evaluateFitness()
 {
 	auto[A, B, C, D] = toPhenotype();
-	return std::pow(A - B, 2) + std::pow(C + D, 2) - std::pow(A - 30, 3) - std::pow(C - 40, 3);
+	return (A - B) * (A - B) + (C + D) * (C + D) - (A - 30) * (A - 30) * (A - 30) - (C - 40) * (C - 40) * (C - 40);
 }
 
 void WingDesignPopMember::print(std::ostream & str) const
@@ -18,7 +18,7 @@ void WingDesignPopMember::print(std::ostream & str) const
 
 double WingDesignPopMember::getChangeChance() const
 {
-	return 1.1 / BIT_COUNT;
+	return 0.8 / BIT_COUNT;
 }
 
 std::tuple<long, long, long, long> WingDesignPopMember::toPhenotype() const

@@ -21,7 +21,7 @@ public:
 
 	///////////////////
 	// Settings
-	void setSelectionStrategy(SelectionStrategy<TPopMember> * selectionStrategy);
+	void setSelectionStrategy(const SelectionStrategy<TPopMember> * selectionStrategy);
 
 	void setStopCondition(const std::function<bool(int, const Population &)> & stopCondition);
 	void setCallback(const std::function<void(int, Population &)> & callback);
@@ -42,7 +42,7 @@ private:
 	std::function<bool(int, const Population &)> stopCondition;
 	std::function<void(int, Population &)> callback;
 
-	SelectionStrategy<TPopMember> * selectionStrategy;
+	const SelectionStrategy<TPopMember> * selectionStrategy;
 
 	int populationSize;
 	int eliteSelecteesCount;
@@ -89,7 +89,7 @@ inline typename EvolutionaryAlgorithm<TPopMember>::Population EvolutionaryAlgori
 ///////////////////
 // Settings
 template<class TPopMember>
-inline void EvolutionaryAlgorithm<TPopMember>::setSelectionStrategy(SelectionStrategy<TPopMember> * selectionStrategy)
+inline void EvolutionaryAlgorithm<TPopMember>::setSelectionStrategy(const SelectionStrategy<TPopMember> * selectionStrategy)
 {
 	this->selectionStrategy = selectionStrategy;
 }

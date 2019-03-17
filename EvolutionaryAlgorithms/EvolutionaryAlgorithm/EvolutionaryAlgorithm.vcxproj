@@ -159,7 +159,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ANNPopMember.h" />
     <ClInclude Include="fwd_decl.h" />
     <ClInclude Include="EvolutionaryAlgorithm.h" />
     <ClInclude Include="GAPopMember.h" />
@@ -169,8 +168,6 @@
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ANNPopMember.cpp" />
-    <ClCompile Include="GAPopMember.cpp" />
     <ClCompile Include="IPopMember.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
