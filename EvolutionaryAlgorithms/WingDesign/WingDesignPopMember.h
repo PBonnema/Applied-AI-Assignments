@@ -16,8 +16,4 @@ public:
 
 private:
 	std::tuple<long, long, long, long> toPhenotype() const;
-
-	// Polymorphic assignment operators
-	WingDesignPopMember & assignToMe(const IPopMember & other) override;
-	WingDesignPopMember & assignToMe(IPopMember && other) override;
 };

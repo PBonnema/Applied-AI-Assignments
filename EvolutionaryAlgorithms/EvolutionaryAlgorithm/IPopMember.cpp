@@ -3,12 +3,6 @@
 
 #include <ostream>
 
-IPopMember & IPopMember::assign(IPopMember & other)
-{
-	fitness = other.fitness;
-	return assignToMe(other);
-}
-
 void IPopMember::evaluate()
 {
 	fitness = evaluateFitness();

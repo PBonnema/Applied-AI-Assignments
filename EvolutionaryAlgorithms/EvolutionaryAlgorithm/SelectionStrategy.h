@@ -3,8 +3,6 @@
 #include "Util.h"
 
 #include <vector>
-#include <execution>
-#include <cassert>
 #include <random>
 #include <algorithm>
 
@@ -53,8 +51,6 @@ inline SelectionTournament<TPopMember>::SelectionTournament(int tournamentSize, 
 	, tournamentSize{ tournamentSize }
 	, p{ p }
 {
-	assert(tournamentSize >= 2);
-	assert(p > 0.0 && p <= 1.0);
 }
 
 template<class TPopMember>
@@ -170,9 +166,7 @@ inline std::vector<TPopMember> SelectionRoulette<TPopMember>::select(const std::
 	// Use lowestFitness for normalization if it is negative.
 	// Multiply it by 2 so that the worst member won't end up with a fitness 0 zero, giving it a chance to be selected.
 	double lowestFitness = std::min(population.back().getFitness() * 2, 0.0);
-	//TODO profile par_unseq
-	std::transform_inclusive_scan(std::execution::par_unseq,
-		population.cbegin(), population.cend(), cumulativeNormalizedFitness.begin(),
+	std::transform_inclusive_scan(population.cbegin(), population.cend(), cumulativeNormalizedFitness.begin(),
 		std::plus<>(),
 		[lowestFitness](const TPopMember & member) { return member.getFitness() - lowestFitness; });
 
@@ -216,9 +210,7 @@ inline std::vector<TPopMember> SelectionSUS<TPopMember>::select(const std::vecto
 	// Use lowestFitness for normalization if it is negative.
 	// Multiply it by 2 so that the worst member won't end up with a fitness 0 zero, giving it a chance to be selected.
 	double lowestFitness = std::min(population.back().getFitness() * 2, 0.0);
-	//TODO profile par_unseq
-	std::transform_inclusive_scan(std::execution::par_unseq,
-		population.cbegin(), population.cend(), cumulativeNormalizedFitness.begin(),
+	std::transform_inclusive_scan(population.cbegin(), population.cend(), cumulativeNormalizedFitness.begin(),
 		std::plus<>(),
 		[lowestFitness](const TPopMember & member) { return member.getFitness() - lowestFitness; });
 

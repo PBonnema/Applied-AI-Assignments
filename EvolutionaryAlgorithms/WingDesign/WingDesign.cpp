@@ -11,13 +11,14 @@
 #include <random>
 #include <algorithm>
 #include <iomanip>
+#include <unordered_map>
 
 int main()
 {
 	int runs = 200;
 	std::unordered_map<std::string, SelectionStrategy<WingDesignPopMember> *> strategies = {
 		{ "Truncate0.01", new SelectionTruncate<WingDesignPopMember>{ 0.01 } },
-		{ "Truncate0.01", new SelectionTruncate<WingDesignPopMember>{ 0.02 } },
+		{ "Truncate0.02", new SelectionTruncate<WingDesignPopMember>{ 0.02 } },
 		{ "Truncate0.05", new SelectionTruncate<WingDesignPopMember>{ 0.05 } },
 		{ "Tournament10;1.0", new SelectionTournament<WingDesignPopMember>{ 10, { 1.0 } } },
 		{ "Tournament10;0.8", new SelectionTournament<WingDesignPopMember>{ 10, { 0.8 } } },

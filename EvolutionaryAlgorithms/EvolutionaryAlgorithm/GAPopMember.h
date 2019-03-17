@@ -5,7 +5,6 @@
 #include <bitset>
 #include <array>
 #include <random>
-#include <execution>
 #include <utility>
 
 template<std::size_t ...GROUPS>

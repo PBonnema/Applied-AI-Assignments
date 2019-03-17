@@ -3,10 +3,8 @@
 #include "SelectionStrategy.h"
 
 #include <vector>
-#include <execution>
-#include <cassert>
+#include <functional>
 
-//TODO rename naar EvolutionaryAlgorithm maar eerst wijzigingen committen!
 template<class TPopMember>
 class EvolutionaryAlgorithm
 {
@@ -29,8 +27,6 @@ public:
 	void setEliteSelecteesCount(int eliteSelecteesCount);
 
 private:
-	void doSettingsSanityCheck();
-
 	void evaluate();
 	void recombinate(const Population & selectees);
 	void mutate();
@@ -63,7 +59,6 @@ inline void EvolutionaryAlgorithm<TPopMember>::sortDesc(Population & population)
 template<class TPopMember>
 inline typename EvolutionaryAlgorithm<TPopMember>::Population EvolutionaryAlgorithm<TPopMember>::run()
 {
-	doSettingsSanityCheck();
 	population = Population(populationSize);
 	int generation = 0;
 
@@ -120,17 +115,8 @@ inline void EvolutionaryAlgorithm<TPopMember>::setEliteSelecteesCount(int eliteS
 ///////////////////
 // Private
 template<class TPopMember>
-inline void EvolutionaryAlgorithm<TPopMember>::doSettingsSanityCheck()
-{
-	assert(eliteSelecteesCount <= populationSize);
-	assert(eliteSelecteesCount >= 0);
-	assert(populationSize >= 0);
-}
-
-template<class TPopMember>
 inline void EvolutionaryAlgorithm<TPopMember>::evaluate()
 {
-	assert(population.size() == populationSize);
 	for (TPopMember & member : population)
 	{
 		member.evaluate();
@@ -140,13 +126,10 @@ inline void EvolutionaryAlgorithm<TPopMember>::evaluate()
 template<class TPopMember>
 inline void EvolutionaryAlgorithm<TPopMember>::recombinate(const Population & selectees)
 {
-	assert(selectees.size() % 2 == 0);
-	assert(population.capacity() == populationSize);
 	for (int i = 0, end = static_cast<int>(selectees.size()); i < end; i += 2)
 	{
 		population.emplace_back().crossover(selectees[i], selectees[i + 1]);
 	}
-	assert(static_cast<int>(population.size()) == populationSize);
 }
 
 template<class TPopMember>

@@ -5,6 +5,7 @@
 double WingDesignPopMember::evaluateFitness()
 {
 	auto[A, B, C, D] = toPhenotype();
+	// This is the function that we're trying to maximize. It turns out that using std::pow is slow.
 	return (A - B) * (A - B) + (C + D) * (C + D) - (A - 30) * (A - 30) * (A - 30) - (C - 40) * (C - 40) * (C - 40);
 }
 
@@ -30,14 +31,4 @@ std::tuple<long, long, long, long> WingDesignPopMember::toPhenotype() const
 	long C = static_cast<long>((bits >> 6 & mask).to_ulong());
 	long D = static_cast<long>((bits & mask).to_ulong());
 	return { A, B, C, D };
-}
-
-WingDesignPopMember & WingDesignPopMember::assignToMe(const IPopMember & other)
-{
-	return *this = dynamic_cast<const WingDesignPopMember&>(other);
-}
-
-WingDesignPopMember & WingDesignPopMember::assignToMe(IPopMember && other)
-{
-	return *this = dynamic_cast<WingDesignPopMember&&>(std::move(other));
 }
