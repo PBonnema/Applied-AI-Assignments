@@ -131,7 +131,7 @@ print('MSE: {}\n'.format(MSE / len(inputs)))
 # 4.3 C. XOR and Back-propagation
 # Neural Network Settings
 learning_rate = 20
-epochs = 2000
+epochs = 1000
 weight_lower_bound = -1
 weight_upper_bound = 1
 rng = np.random.RandomState(seed = None)
@@ -165,7 +165,7 @@ expected_outputs = np.array([
     [0],
 ])
 
-nn.train(inputs, expected_outputs, learning_rate, epochs)
+errors = nn.train(inputs, expected_outputs, learning_rate, epochs)
 
 print('After training:')
 MSE = 0.0
@@ -174,16 +174,23 @@ for input, expected_output in zip(inputs, expected_outputs):
     print('{} -> {}'.format(input, output))
     MSE += ((expected_output - output) ** 2).sum()
 print('MSE: {}\n'.format(MSE / len(inputs)))
+    
+plt.plot(errors / inputs.shape[0], linewidth = 1.0)
+plt.title('XOR')
+plt.xlabel('Epoch')
+plt.ylabel('Mean Squared Error')
+plt.ylim(bottom = 0, top = 0.7)
+plt.show()
 
 # 4.3 D. Iris dataset
 # Neural Network Settings
-validation_percentage = 0.6
+validation_percentage = 0.35
 minimum_certainty = 0.8
-learning_rate = 0.12
+learning_rate = 0.1
 epochs = 500
 weight_lower_bound = -1
 weight_upper_bound = 1
-rng = np.random.RandomState(seed = 0)
+rng = np.random.RandomState(seed = None)
 nn = NeuralNetwork(
     4,
     [
@@ -250,7 +257,8 @@ print('Mean squared error for validation set: {:0.5f}\nCorrect: {:0.2f}% ({}/{})
     correct_count, \
     val_samples.shape[0]))
 
-plt.plot(errors / val_samples.shape[0], linewidth = 1.0)
+plt.plot(errors / training_samples.shape[0], linewidth = 1.0)
+plt.title('Iris')
 plt.xlabel('Epoch')
 plt.ylabel('Mean Squared Error')
 plt.ylim(bottom = 0, top = 0.7)
