@@ -1,6 +1,5 @@
 #pragma once
 #include "fwd_decl.h"
-#include "SelectionStrategy.h"
 
 #include <vector>
 #include <functional>

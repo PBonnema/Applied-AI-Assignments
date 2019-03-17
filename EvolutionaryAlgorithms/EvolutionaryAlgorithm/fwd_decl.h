@@ -1,12 +1,20 @@
 #pragma once
-
-#ifdef NDEBUG
-#undef NDEBUG
-#endif
+#include <cstddef>
 
 class IPopMember;
-class ANNPopMember;
+template<std::size_t ...GROUPS>
+class GAPopMember;
+
 template<class TPopMember>
 class EvolutionaryAlgorithm;
+
 template<class TPopMember>
 class SelectionStrategy;
+template<class TPopMember>
+class SelectionRoulette;
+template<class TPopMember>
+class SelectionSUS;
+template<class TPopMember>
+class SelectionTournament;
+template<class TPopMember>
+class SelectionTruncate;

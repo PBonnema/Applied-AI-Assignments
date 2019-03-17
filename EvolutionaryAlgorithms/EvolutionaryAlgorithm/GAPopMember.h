@@ -3,9 +3,7 @@
 #include "Util.h"
 
 #include <bitset>
-#include <array>
 #include <random>
-#include <utility>
 
 template<std::size_t ...GROUPS>
 class GAPopMember : public IPopMember
