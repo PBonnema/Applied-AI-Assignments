@@ -7,7 +7,6 @@
 #include <cassert>
 #include <random>
 #include <algorithm>
-#include <set>
 
 ///////////////////
 // SelectionStrategy
@@ -67,20 +66,21 @@ inline std::vector<TPopMember> SelectionTournament<TPopMember>::select(const std
 	for (int i = 0; i < membersToSelect; i++)
 	{
 		// Pick contenders at random
+		std::vector<std::size_t> indices;
+		indices.reserve(tournamentSize);
+		for (int i = 0; i < tournamentSize; ++i)
+		{
+			std::size_t randomIndex = randomInt(0, popSize - 1);
+			while (std::any_of(indices.cbegin(), indices.cend(), [&randomIndex](std::size_t index) { return index == randomIndex; }))
+			{
+				randomIndex = randomInt(0, popSize - 1);
+			}
+			indices.emplace_back(randomIndex);
+		}
+
 		int winningIndex = calcWinningIndex();
-		std::set<std::size_t> indices;
-		while (indices.size() < tournamentSize)
-		{
-			indices.insert(randomInt(0, popSize - 1));
-		}
-
-		auto it = indices.cbegin();
-		for (int i = 0; i < winningIndex; i++)
-		{
-			++it;
-		}
-
-		selectees.push_back(population[*it]);
+		std::nth_element(indices.begin(), indices.begin() + winningIndex, indices.end());
+		selectees.push_back(population[indices[winningIndex]]);
 	}
 	return selectees;
 }

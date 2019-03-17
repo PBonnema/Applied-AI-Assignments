@@ -52,8 +52,7 @@ template<class TPopMember>
 inline void EvolutionaryAlgorithm<TPopMember>::sortDesc(Population & population)
 {
 	//Sort on fitness in ascending order
-	//TODO profile de execution policy
-	std::sort(std::execution::par_unseq, population.begin(), population.end(),
+	std::sort(population.begin(), population.end(),
 		[](const TPopMember & left, const TPopMember & right)
 		{
 			return left.getFitness() > right.getFitness();
