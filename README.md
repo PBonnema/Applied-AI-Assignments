@@ -42,4 +42,27 @@ Other topologies were also tried. Topologies with more layers had comparable per
 
 Topologies containing leaky ReLU (LReLU) neurons did as well as sigmoid neurons but required slightly more neurons (atleast 6) though the output neurons still had to be sigmoid neurons since the required outputs are the extremes (0 and 1) and LReLU's have a hard time converging on those.
 
-I've also tried tanh neurons. These topologies required far more neurons and a lower learning rate. A topology with 2 hidden layers and 6 neurons each performed well but still did not any better. These also needed sigma neurons as outputs for the same reasons.
+I've also tried tanh neurons. These topologies required far more neurons and a lower learning rate. A topology with 2 hidden layers and 6 neurons each performed well but still did not any better. These also needed sigmoid neurons as outputs for the same reasons.
+
+## NN Algebraic representation
+I started by looking up a tutorial about Tensorflow and Keras. By chance, this tutorial also implemented an NN for MNIST. The suggested implementation can reach a validation accuracy of ~97% within 10 epochs. However, the used network is rather large with 2 hidden layers of 128 neurons each.
+
+I measured the accuracy of the models and speed of convergence using tensorboard. I've committed a series of TensorBoard log files along with the code. The way that I interpret them is by looking at the epoch_val_acc and epoch_val_loss graphs. Higher or lower, respectively, is better. Often, the epoch_val_loss starts growing again after a couple of epochs. This indicates overfitting. The epoch at which this starts to happen is the best number of epochs.
+
+I started out by experimenting with batch size. Changing this around made a small impact on accuracy but a huge impact on execution times. Smaller batches were slower. I tried up to a batch size of 70 and I sticked with it. The val_loss graph show that the lowest point for most lines lays around 3 or 4 epochs.
+
+Next, I have tried improving the results with 4 different kinds of activation functions: sigmoid, relu, lrelu and tanh. Nothing resulted in better results compared to the original relu. The only real difference was how fast the NN converges but relu also converges the fastest after approximately 3 echos.
+
+Lastly, I tried different kinds of topologies: 
+
+|hidden layer sizes|val_acc|ns/sample|
+|-|-|-|
+|(64, 64)|0.9687|50|
+|(256, 256)|0.9774|100|
+|(128, 64, 32)|0.9717|70|
+|(30, 20, 10)|0.9589|52|
+|(28*28, 20)|0.9754|280|.
+
+Nothing resulted in better results in terms of validation accuracy but the execution times were influenced heavily depending on the number of neurons, weights and number of layers. The network of (30, 20, 10) was the smallest network and ran almost the fastest but scored pretty well. However, the much larger (64, 64) network scored a bit higher but had the same execution times despite having twice the number of weights. This shows that the number of layers plays a big role in run times for smaller networks but that larger hidden layers are needed to maintain accuracy. In larger networks the number of weights start to dominate.
+
+I would choose (128, 64, 32) to strike a balance between performance and accuracy.
