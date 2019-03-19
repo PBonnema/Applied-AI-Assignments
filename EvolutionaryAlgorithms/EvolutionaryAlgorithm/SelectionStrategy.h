@@ -14,11 +14,20 @@ class SelectionStrategy
 public:
 	virtual ~SelectionStrategy() = default;
 
+	/// <summary>
+	/// Must return membersToSelect selectees from the population. These will act as parents during recombination.
+	/// The returned vector may contain the same selectee twice.
+	/// </summary>
+	/// <returns> The selectees</returns>
 	virtual std::vector<TPopMember> select(const std::vector<TPopMember> & population, int membersToSelect) const = 0;
 };
 
 ///////////////////
 // SelectionTournament
+/// <summary>
+/// Implements the tournament selection algorithm. The selection pressure can be tuned with the tournament size and the p variable.
+/// p is the chance that the winner is selected. If it's not selected, then the 2nd place as a p chance to be selected etc.
+/// </summary>
 template<class TPopMember>
 class SelectionTournament : public SelectionStrategy<TPopMember>
 {
@@ -61,12 +70,13 @@ inline std::vector<TPopMember> SelectionTournament<TPopMember>::select(const std
 	std::size_t popSize = population.size();
 	for (int i = 0; i < membersToSelect; i++)
 	{
-		// Pick contenders at random
+		// Pick contenders at random and store their index.
 		std::vector<std::size_t> indices;
 		indices.reserve(tournamentSize);
 		for (int i = 0; i < tournamentSize; ++i)
 		{
 			std::size_t randomIndex = randomInt(0, popSize - 1);
+			// Keep picking a new index if the current index has already been choosen.
 			while (std::any_of(indices.cbegin(), indices.cend(), [&randomIndex](std::size_t index) { return index == randomIndex; }))
 			{
 				randomIndex = randomInt(0, popSize - 1);
@@ -74,7 +84,9 @@ inline std::vector<TPopMember> SelectionTournament<TPopMember>::select(const std
 			indices.emplace_back(randomIndex);
 		}
 
+		// Now calculate which place in the tournament result (1th place, 2nd place etc) will be selected.
 		int winningIndex = calcWinningIndex();
+		// And figure out the index of the selectee.
 		std::nth_element(indices.begin(), indices.begin() + winningIndex, indices.end());
 		selectees.push_back(population[indices[winningIndex]]);
 	}
@@ -83,6 +95,8 @@ inline std::vector<TPopMember> SelectionTournament<TPopMember>::select(const std
 
 ///////////////////
 // Private
+
+// Calculates which place in the tournament result (1th place, 2nd place etc) will be selected.
 template<class TPopMember>
 inline int SelectionTournament<TPopMember>::calcWinningIndex() const
 {
@@ -127,16 +141,23 @@ inline SelectionTruncate<TPopMember>::SelectionTruncate(double fraction)
 {
 }
 
+// Simply chop off the lower fraction part of the population and then repeat the upper portion as many times as needed to select enough members.
 template<class TPopMember>
 inline std::vector<TPopMember> SelectionTruncate<TPopMember>::select(const std::vector<TPopMember> & population, int membersToSelect) const
 {
 	std::vector<TPopMember> selectees;
 	selectees.reserve(membersToSelect);
+	// This is the highest index that we can pick from. Make sure there is always at least 1 possible index.
 	std::size_t maxIndex = std::max(static_cast<std::size_t>(population.size() * fraction), 1ull);
+
+	// Append the allowed portion of the population to selectees as many times as needed. Don't bother to randomly select members.
 	for (int i = 0; i < membersToSelect; i++)
 	{
 		selectees.push_back(population[i % maxIndex]);
 	}
+
+	// Now shuffle the selectees as they were kept in order of fitness by the code above.
+	// This is needed since their order also specifies which selectee will mate with whom during recombination and we want this to vary.
 	std::shuffle(selectees.begin(), selectees.end(), RANDOM_ENG);
 	return selectees;
 }

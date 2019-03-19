@@ -1,7 +1,5 @@
 #include "WingDesignPopMember.h"
 
-#include <memory>
-
 double WingDesignPopMember::evaluateFitness()
 {
 	auto[A, B, C, D] = toPhenotype();
@@ -17,18 +15,21 @@ void WingDesignPopMember::print(std::ostream & str) const
 	str << ")";
 }
 
-double WingDesignPopMember::getChangeChance() const
+double WingDesignPopMember::getFlipChance() const
 {
+	// Use some value that is proportional to the number of bits.
 	return 0.8 / BIT_COUNT;
 }
 
+///////////////////
+// Private
 std::tuple<long, long, long, long> WingDesignPopMember::toPhenotype() const
 {
-	const Bits & bits = getBits();
-	Bits mask{ "111111" };
-	long A = static_cast<long>((bits >> 18 & mask).to_ulong());
-	long B = static_cast<long>((bits >> 12 & mask).to_ulong());
-	long C = static_cast<long>((bits >> 6 & mask).to_ulong());
-	long D = static_cast<long>((bits & mask).to_ulong());
-	return { A, B, C, D };
+	auto[A, B, C, D] = unpack();
+	return {
+		A.to_ulong(),
+		B.to_ulong(),
+		C.to_ulong(),
+		D.to_ulong()
+	};
 }

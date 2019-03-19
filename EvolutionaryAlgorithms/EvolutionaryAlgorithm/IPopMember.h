@@ -1,6 +1,10 @@
 #pragma once
 #include <iosfwd>
 
+/// <summary>
+/// A convenience interface class that defines the necessary members that PopMember classes must implement
+/// to be able to be used by the evolutionary algorithm. However, it is not mandatory to derive from this class.
+/// </summary>
 class IPopMember
 {
 public:
@@ -15,6 +19,7 @@ public:
 	virtual void mutate() = 0;
 	virtual void print(std::ostream & str) const = 0;
 
+	/// <returns> Will simply returned the cached fitness. Call evaluate() to recalculate the fitness.</returns>
 	double getFitness() const;
 
 private:

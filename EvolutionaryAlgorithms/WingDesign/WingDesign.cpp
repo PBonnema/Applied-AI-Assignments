@@ -8,24 +8,24 @@
 #include "EvolutionaryAlgorithm/SelectionStrategy.h"
 
 #include <iostream>
-#include <random>
-#include <algorithm>
 #include <iomanip>
 #include <unordered_map>
+#include <memory>
 
 int main()
 {
 	int runs = 200;
-	std::unordered_map<std::string, SelectionStrategy<WingDesignPopMember> *> strategies = {
-		{ "Truncate0.01", new SelectionTruncate<WingDesignPopMember>{ 0.01 } },
-		{ "Truncate0.02", new SelectionTruncate<WingDesignPopMember>{ 0.02 } },
-		{ "Truncate0.05", new SelectionTruncate<WingDesignPopMember>{ 0.05 } },
-		{ "Tournament10;1.0", new SelectionTournament<WingDesignPopMember>{ 10, { 1.0 } } },
-		{ "Tournament10;0.8", new SelectionTournament<WingDesignPopMember>{ 10, { 0.8 } } },
-		{ "Tournament12;1.0", new SelectionTournament<WingDesignPopMember>{ 12, { 1.0 } } },
-		{ "Tournament12;0.8", new SelectionTournament<WingDesignPopMember>{ 12, { 0.8 } } },
-		{ "Tournament14;1.0", new SelectionTournament<WingDesignPopMember>{ 14, { 1.0 } } },
-		{ "Tournament14;0.8", new SelectionTournament<WingDesignPopMember>{ 14, { 0.8 } } },
+	double bestFitness = 98938; // Only used to determine the rate of convergence.
+	std::unordered_map<std::string, std::shared_ptr<SelectionStrategy<WingDesignPopMember>>> strategies = {
+		{ "Truncate0.01", std::make_shared<SelectionTruncate<WingDesignPopMember>>(0.01) },
+		{ "Truncate0.02", std::make_shared<SelectionTruncate<WingDesignPopMember>>(0.02) },
+		{ "Truncate0.05", std::make_shared<SelectionTruncate<WingDesignPopMember>>(0.05) },
+		{ "Tournament10;1.0", std::make_shared<SelectionTournament<WingDesignPopMember>>(10, 1.0) },
+		{ "Tournament10;0.8", std::make_shared<SelectionTournament<WingDesignPopMember>>(10, 0.8) },
+		{ "Tournament12;1.0", std::make_shared<SelectionTournament<WingDesignPopMember>>(12, 1.0) },
+		{ "Tournament12;0.8", std::make_shared<SelectionTournament<WingDesignPopMember>>(12, 0.8) },
+		{ "Tournament14;1.0", std::make_shared<SelectionTournament<WingDesignPopMember>>(14, 1.0) },
+		{ "Tournament14;0.8", std::make_shared<SelectionTournament<WingDesignPopMember>>(14, 0.8) },
 	};
 	
 	for (const auto &[name, selection] : strategies)
@@ -50,17 +50,24 @@ int main()
 				ea.setPopulationSize(populationSize);
 				ea.setEliteSelecteesCount(eliteSelecteesCount);
 				ea.setSelectionStrategy(selection);
-				ea.setStopCondition([&runnningTotalGens](int generation, const EvolutionaryAlgorithm<WingDesignPopMember>::Population & population)
+				// Use this stop condition to determine the rate of convergence. It uses knowledge of the problem (the best fitness).
+				ea.setStopCondition([&bestFitness, &runnningTotalGens](int generation, const EvolutionaryAlgorithm<WingDesignPopMember>::Population & population)
 				{
-					if (population[0].getFitness() == 98938)
+					if (population[0].getFitness() == bestFitness)
 					{
 						runnningTotalGens += generation;
 						return true;
 					}
 					return false;
 				});
+				// Use a stop condition like this if you simply want to run the algorithm once.
+				//ea.setStopCondition([](int generation, const EvolutionaryAlgorithm<WingDesignPopMember>::Population & population)
+				//{
+				//	return generation > 50; // Or do something complex with population.
+				//});
 				ea.setCallback([](int generation, const EvolutionaryAlgorithm<WingDesignPopMember>::Population & population)
 				{
+					// Can do anything like drawing some simulator, collecting statistics etc.
 				});
 
 				for (int i = 0; i < runs; i++)
@@ -73,10 +80,5 @@ int main()
 			std::cout << "\n";
 		}
 		std::cout << "\n";
-	}
-
-	for (const auto &[name, selection] : strategies)
-	{
-		delete selection;
 	}
 }
