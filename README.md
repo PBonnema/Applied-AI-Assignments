@@ -66,3 +66,37 @@ Lastly, I tried different kinds of topologies:
 Nothing resulted in better results in terms of validation accuracy but the execution times were influenced heavily depending on the number of neurons, weights and number of layers. The network of (30, 20, 10) was the smallest network and ran almost the fastest but scored pretty well. However, the much larger (64, 64) network scored a bit higher but had the same execution times despite having twice the number of weights. This shows that the number of layers plays a big role in run times for smaller networks but that larger hidden layers are needed to maintain accuracy. In larger networks the number of weights start to dominate.
 
 I would choose (128, 64, 32) to strike a balance between performance and accuracy.
+
+## Evolutionary algorithms
+I choose the wing design problem to solve. To find a good set of parameters for the algorithm I semi-bruteforced it. I ran a large number of parameter combinations and measured the speed of convergence over 200 runs. The convergence is defined as the number of generations it takes to reach the perfect fitness of 98938 for at least 1 population member.
+The results can be found under .\EvolutionaryAlgorithm in the text files called meanTablex.txt.
+
+Each suchs text file contains a table of convergence means (over 200 runs) for each selection strategy that was implemented.
+The tables show the averages for each combination of elite member count and population size for that strategy that was tried.
+Every time that a set of parameters was run I interpreted the results and tried other parameters (producing the next text file).
+
+The selection strategies that I implemented are: tournament, truncate, fitness proportional roulette, and stochastic universal sampling (SUS).
+For each table the name of the strategy and its own parameters are printed.
+- Tournament is printed as Tournament<tournament size>\;\<p variable>
+- Truncate is printed as Truncate\<fraction>.
+- SUS and fitness proportional roulette are printed as SUS and Roulette.
+  
+In meanTables1 it became clear that truncate performed much better compared to Roulette and SUS. It also became clear that a population size under 40 doesn't perform well. It also shows that Roulette and SUS benefit from more elite members while Truncate slightly suffers.
+
+In MeanTables2, 0 elite members was tried. Did didn't work out well. Roulette performed very bad.
+
+In MeanTables3, I added tournament selection as it was finished by then. I also upped the range of population size and elite member count. It became clear that a very high selection pressure works best in combination with a large population size. The number of elites didn't matter that much anymore for truncate and tournament.
+
+In MeanTables4 I left out roulette and SUS and increased the selection pressure. The results became much better.
+I did the same in MeanTables5.
+
+The best performing parameter combination I saw is:
+- Truncate selection with a fraction parameter of 0.01
+- Population size of 200
+- Any number of elite members
+
+This converges within 5 generations on average.
+
+Tournament14;1.0 with a pop size of 200 and any number of elites converges within 6 generations on average.
+
+In the end I didn't bother to test different bitflip chances as well sicne the performance was this good already. For all tests I used a flip chance of 0.8 / 24 (the number of bits in the bitstring).
