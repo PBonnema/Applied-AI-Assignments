@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import normalize
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Activation, Flatten
+from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.callbacks import TensorBoard
 import time
 
