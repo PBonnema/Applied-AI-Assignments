@@ -76,7 +76,7 @@ inline std::vector<TPopMember> SelectionTournament<TPopMember>::select(const std
 		for (int i = 0; i < tournamentSize; ++i)
 		{
 			std::size_t randomIndex = randomInt(0, popSize - 1);
-			// Keep picking a new index if the current index has already been choosen.
+			// Keep picking a new index if the current index has already been chosen.
 			while (std::any_of(indices.cbegin(), indices.cend(), [&randomIndex](std::size_t index) { return index == randomIndex; }))
 			{
 				randomIndex = randomInt(0, popSize - 1);

@@ -94,33 +94,22 @@ inline void GAPopMember<GROUPS...>::crossover(const IPopMember & parentA, const 
 template<std::size_t ...GROUPS>
 inline void GAPopMember<GROUPS...>::mutate()
 {
-	double averageBitsBetweenFlips = BIT_COUNT / static_cast<double>(1 + getFlipChance() * BIT_COUNT);
-	for (std::size_t index = randomPoisson(averageBitsBetweenFlips); index < BIT_COUNT; index += randomPoisson(averageBitsBetweenFlips))
-	{
-		bits[index].flip();
-	}
-
 	// The Poisson distribution models the chance for each number of flips to occur given a mean number of flips.
 	// Our mean number of flips equals the flip chance per bit times the number of bits.
-	//std::size_t flipCount = randomPoisson(getFlipChance() * BIT_COUNT);
-	//std::vector<std::size_t> indices;
-	//indices.reserve(flipCount);
-	//for (int i = 0; i < flipCount; ++i)
-	//{
-	//	std::size_t randomIndex = randomUniformInt(0, BIT_COUNT - 1);
-	//	// Keep picking a new index if the current index has already been choosen.
-	//	while (std::any_of(indices.cbegin(), indices.cend(), [&randomIndex](std::size_t index) { return index == randomIndex; }))
-	//	{
-	//		randomIndex = randomUniformInt(0, BIT_COUNT - 1);
-	//	}
-	//	indices.emplace_back(randomIndex);
-	//	bits[randomIndex].flip();
-	//}
-
-	//for (int i = 0; i < flipCount; ++i)
-	//{
-	//	bits[randomUniformInt(0, BIT_COUNT - 1)].flip();
-	//}
+	std::size_t flipCount = randomPoisson(getFlipChance() * BIT_COUNT);
+	std::vector<std::size_t> indices;
+	indices.reserve(flipCount);
+	for (int i = 0; i < flipCount; ++i)
+	{
+		std::size_t randomIndex = randomUniformInt(0, BIT_COUNT - 1);
+		// Keep picking a new index if the current index has already been choosen.
+		while (std::any_of(indices.cbegin(), indices.cend(), [&randomIndex](std::size_t index) { return index == randomIndex; }))
+		{
+			randomIndex = randomUniformInt(0, BIT_COUNT - 1);
+		}
+		indices.emplace_back(randomIndex);
+		bits[randomIndex].flip();
+	}
 }
 
 template<std::size_t ...GROUPS>
