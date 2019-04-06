@@ -18,20 +18,20 @@ class SelectionTournament(ISelectionStrategy[TPopMember]):
     def select(self, population: Population, membersToSelect: int) -> Population:
         selectees = Population([])
         popSize = len(population)
-        indices = np.full(self.__tournamentSize, -1, dtype = np.int)
         for _ in range(membersToSelect):
+            indices = []
             # Pick contenders at random and store their index.
-            for index in np.nditer(indices, op_flags=['writeonly']):
+            for _ in range(self.__tournamentSize):
                 randomIndex = randrange(popSize - 1)
-                # Keep picking a new index if the current index has already been choosen.
+                # Keep picking a new index if the current index has already been chosen.
                 while randomIndex in indices:
                     randomIndex = randrange(popSize - 1)
-                index[...] = randomIndex
+                indices.append(randomIndex)
 
             # Now calculate which place in the tournament result (1th place, 2nd place etc) will be selected.
             winningIndex = self.__calcWinningIndex()
             # And figure out the index of the selectee.
-            indices.partition(winningIndex)
+            indices = np.partition(indices, winningIndex)
             selectees.append(population[indices[winningIndex]])
         return selectees
 

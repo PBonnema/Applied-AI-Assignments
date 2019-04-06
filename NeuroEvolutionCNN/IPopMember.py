@@ -1,5 +1,6 @@
 from __future__ import annotations # Necessary to allow class members to typehint using their parent class. Supported from Python 3.7 onwards (https://stackoverflow.com/questions/40049016/using-the-class-as-a-type-hint-for-arguments-in-its-methods)
 import abc
+from typing import List
 from io import TextIOBase
 
 class IPopMember(metaclass=abc.ABCMeta):
@@ -18,7 +19,7 @@ class IPopMember(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def crossover(self, otherParent: IPopMember) -> IPopMember:
+    def crossover(self, otherParent: IPopMember) -> List[IPopMember]:
         pass
 
     @abc.abstractmethod

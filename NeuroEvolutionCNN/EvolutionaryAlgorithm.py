@@ -48,7 +48,9 @@ class EvolutionaryAlgorithm(Generic[TPopMember]):
         self.__evaluate()
         EvolutionaryAlgorithm.__sortDesc(self.__population)
         while not self.__stopCondition(generation, self.__population):
-            selectees = self.__selectionStrategy.select(self.__population, (self.__populationSize - self.__eliteSelecteesCount) * 2)
+            selecteesCount = self.__populationSize - self.__eliteSelecteesCount
+            selecteesCount += selecteesCount % 2
+            selectees = self.__selectionStrategy.select(self.__population, selecteesCount)
             # Keep only the elites before recombination. recombinate() will append new children to the population after our elites.
             del self.__population[self.__eliteSelecteesCount:]
             self.__recombinate(selectees)
@@ -69,7 +71,8 @@ class EvolutionaryAlgorithm(Generic[TPopMember]):
         crossover() is called on each parent as selectees[n*2] with another parent as selectees[n*2+1].
         """
         for parentA, parentB in zip(selectees[0::2], selectees[1::2]):
-            self.__population.append(parentA.crossover(parentB))
+            self.__population.extend(parentA.crossover(parentB))
+        del self.__population[self.__populationSize:]
 
     def __mutate(self) -> None:
         # Make sure not to mutate the elite members.
