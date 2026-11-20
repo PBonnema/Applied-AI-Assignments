@@ -59,6 +59,10 @@ class EvolutionaryAlgorithm(Generic[TPopMember]):
             EvolutionaryAlgorithm.__sortDesc(self.__population)
             self.__callback(generation, self.__population)
             generation += 1
+            
+            # create single-line string of fitness values
+            thestring = " ".join(str(member.getFitness()) for member in self.__population[:10])
+            print(f'generation {generation}: {thestring}')
         return self.__population
 
     def __evaluate(self) -> None:

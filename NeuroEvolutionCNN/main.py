@@ -14,18 +14,18 @@ def stopCondition(gen: int, pop: list):
         return True
     return False
 
-strategy = SelectionTournament(14, 1.0)
 ea = EvolutionaryAlgorithm(
     memberCls=TestPopMember,
     populationSize=200,
-    selectionStrategy=strategy,
+    selectionStrategy=SelectionTournament(14, 1.0),
     eliteSelecteesCount=2,
     stopCondition=stopCondition,
     callback=lambda gen, pop: None
 )
 
-for run in range(1, 11):
-    ea.run()
-    print(runnningTotalGens / run)
+population = ea.run()
+# for run in range(1, 11):
+#     population = ea.run()
+#     print(runnningTotalGens / run)
 
 # print(runnningTotalGens / 200)
